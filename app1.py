@@ -4,6 +4,7 @@ import json
 import base64
 import pandas as pd
 from datetime import datetime
+import glob
 import os
 
 # Data user dan password beserta masa aktifnya
@@ -31,11 +32,10 @@ def check_credentials(username, password):
 # Judul aplikasi
 st.title("HAR File Processor")
 
-# Cek apakah pengguna sudah login
+# Form login
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 
-# Form login
 if not st.session_state.logged_in:
     with st.form(key='login_form'):
         username = st.text_input(label='Username')
@@ -46,19 +46,10 @@ if not st.session_state.logged_in:
     if login_button:
         if check_credentials(username, password):
             st.session_state.logged_in = True
-            st.session_state.username = username
             st.success("Login berhasil!")
+        else:
+            st.error("Login gagal. Silakan coba lagi.")
 else:
-    # Jika sudah login, tampilkan halaman utama
-    st.subheader(f"Selamat datang, {st.session_state.username}!")
-
-    # Opsi untuk logout
-    if st.button("Logout"):
-        if st.confirm("Apakah anda yakin untuk keluar?"):
-            st.session_state.logged_in = False
-            st.session_state.username = None
-            st.success("Anda telah keluar.")
-
     # Deskripsi aplikasi
     st.markdown("""
     Aplikasi ini memproses file HAR, mengekstrak data produk dari Shopee, dan menghasilkan URL produk.
@@ -182,3 +173,8 @@ else:
             file_name="processed_data.csv",
             mime="text/csv"
         )
+
+    # Opsi logout
+    if st.button("Logout"):
+        st.session_state.logged_in = False
+        st.success("Anda telah berhasil logout.")

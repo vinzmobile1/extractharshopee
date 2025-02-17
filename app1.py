@@ -46,9 +46,8 @@ if not st.session_state.logged_in:
         if check_credentials(username, password):
             st.session_state.logged_in = True  # Set status login
             st.success("Login berhasil!")  # Tampilkan pesan sukses
-            # Tidak perlu rerun, langsung tampilkan konten di bawah
 else:
-    # Deskripsi aplikasi
+    # Jika sudah login, tampilkan halaman pemrosesan file HAR
     st.markdown("""
     Aplikasi ini memproses file HAR, mengekstrak data produk dari Shopee, dan menghasilkan URL produk.
     """)
@@ -174,5 +173,5 @@ else:
 
     # Opsi logout
     if st.button("Logout"):
-        st.session_state.logged_in = False  # Reset status login
-        st.success("Anda telah berhasil logout.")  # Tampilkan pesan logout
+        st.session_state.logged_in = False
+        st.success("Anda telah berhasil logout.")

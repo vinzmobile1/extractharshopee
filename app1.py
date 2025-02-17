@@ -4,7 +4,6 @@ import json
 import base64
 import pandas as pd
 from datetime import datetime
-import glob
 import os
 
 # Data user dan password beserta masa aktifnya
@@ -45,10 +44,9 @@ if not st.session_state.logged_in:
     # Proses login
     if login_button:
         if check_credentials(username, password):
-            st.session_state.logged_in = True
-            st.experimental_rerun()  # Menjalankan ulang aplikasi untuk mengarahkan ke halaman utama
-        else:
-            st.error("Login gagal. Silakan coba lagi.")
+            st.session_state.logged_in = True  # Set status login
+            st.success("Login berhasil!")  # Tampilkan pesan sukses
+            # Tidak perlu rerun, langsung tampilkan konten di bawah
 else:
     # Deskripsi aplikasi
     st.markdown("""
@@ -176,5 +174,5 @@ else:
 
     # Opsi logout
     if st.button("Logout"):
-        st.session_state.logged_in = False
-        st.experimental_rerun()  # Menjalankan ulang aplikasi untuk mengarahkan kembali ke halaman login
+        st.session_state.logged_in = False  # Reset status login
+        st.success("Anda telah berhasil logout.")  # Tampilkan pesan logout

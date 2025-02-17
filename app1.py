@@ -46,7 +46,7 @@ if not st.session_state.logged_in:
     if login_button:
         if check_credentials(username, password):
             st.session_state.logged_in = True
-            st.success("Login berhasil!")
+            st.experimental_rerun()  # Menjalankan ulang aplikasi untuk mengarahkan ke halaman utama
         else:
             st.error("Login gagal. Silakan coba lagi.")
 else:
@@ -177,4 +177,4 @@ else:
     # Opsi logout
     if st.button("Logout"):
         st.session_state.logged_in = False
-        st.success("Anda telah berhasil logout.")
+        st.experimental_rerun()  # Menjalankan ulang aplikasi untuk mengarahkan kembali ke halaman login

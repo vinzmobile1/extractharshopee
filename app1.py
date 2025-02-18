@@ -159,7 +159,7 @@ else:
             os.remove(file_path)
 
         # Tampilkan hasil
-        st.subheader("Processed Data")
+        st.subheader("Result Data")
         st.dataframe(df)
 
         # Opsi untuk mengunduh hasil sebagai CSV
@@ -167,7 +167,7 @@ else:
         st.download_button(
             label="Download CSV",
             data=csv,
-            file_name="processed_data.csv",
+            file_name="result_data.csv",
             mime="text/csv"
         )
 

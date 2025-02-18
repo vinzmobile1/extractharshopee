@@ -87,8 +87,8 @@ else:
                             ctime_date = datetime.fromtimestamp(ctime).strftime('%Y-%m-%d') if ctime else None
                             item_data = {
                                 "source": "Aktif",
-                                "shopid": item.get("shopid"),
-                                "itemid": item.get("itemid"),
+                                "shopid": str(item.get("shopid")),  # Convert to text
+                                "itemid": str(item.get("itemid")),  # Convert to text
                                 "item_name": item.get("name"),
                                 "sold_30_days": item.get("sold"),
                                 "historical_sold": item.get("historical_sold"),
@@ -110,8 +110,8 @@ else:
                                 ctime_date = datetime.fromtimestamp(ctime).strftime('%Y-%m-%d') if ctime else None
                                 item_basic_data = {
                                     "source": "Tidak Aktif",
-                                    "shopid": item.get("shopid"),
-                                    "itemid": item_basic.get("itemid"),
+                                    "shopid": str(item.get("shopid")),  # Convert to text
+                                    "itemid": str(item.get("itemid")),  # Convert to text
                                     "item_name": item_basic.get("name"),
                                     "sold_30_days": item_basic.get("sold"),
                                     "historical_sold": item_basic.get("historical_sold"),

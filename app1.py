@@ -97,7 +97,7 @@ else:
                                 "info": item.get("info"),
                                 "startedDateTime": entry.get("startedDateTime", "").split("T")[0],
                                 "url": create_shopee_url("https://shopee.co.id/", item.get("name"), item.get("shopid"), item.get("itemid")),
-                                "ctime": ctime_date
+                                "upload": ctime_date
                             }
                             data_list.append(item_data)
 
@@ -120,7 +120,7 @@ else:
                                     "info": None,
                                     "startedDateTime": entry.get("startedDateTime", "").split("T")[0],
                                     "url": create_shopee_url("https://shopee.co.id/", item_basic.get("name"), item.get("shopid"), item_basic.get("itemid")),
-                                    "ctime": ctime_date
+                                    "upload": ctime_date
                                 }
                                 data_list.append(item_basic_data)
 

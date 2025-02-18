@@ -86,7 +86,7 @@ else:
                             ctime = item.get("ctime")
                             ctime_date = datetime.fromtimestamp(ctime).strftime('%Y-%m-%d') if ctime else None
                             item_data = {
-                                "source": "Aktif",
+                                "status_produk": "Aktif",
                                 "shopid": str(item.get("shopid")),  # Convert to text
                                 "itemid": str(item.get("itemid")),  # Convert to text
                                 "item_name": item.get("name"),
@@ -109,7 +109,7 @@ else:
                                 ctime = item_basic.get("ctime")
                                 ctime_date = datetime.fromtimestamp(ctime).strftime('%Y-%m-%d') if ctime else None
                                 item_basic_data = {
-                                    "source": "Tidak Aktif",
+                                    "status_produk": "Tidak Aktif",
                                     "shopid": str(item.get("shopid")),  # Convert to text
                                     "itemid": str(item.get("itemid")),  # Convert to text
                                     "item_name": item_basic.get("name"),

@@ -1,4 +1,3 @@
-# Import library yang diperlukan
 import streamlit as st
 import json
 import base64
@@ -84,6 +83,8 @@ else:
                     if "data" in response_data and "items" in response_data["data"]:
                         items_data = response_data["data"]["items"]
                         for item in items_data:
+                            ctime = item.get("ctime")
+                            ctime_date = datetime.fromtimestamp(ctime).strftime('%Y-%m-%d') if ctime else None
                             item_data = {
                                 "source": "Aktif",
                                 "shopid": item.get("shopid"),
@@ -95,7 +96,8 @@ else:
                                 "shop_name": item.get("shop_name"),
                                 "info": item.get("info"),
                                 "startedDateTime": entry.get("startedDateTime", "").split("T")[0],
-                                "url": create_shopee_url("https://shopee.co.id/", item.get("name"), item.get("shopid"), item.get("itemid"))
+                                "url": create_shopee_url("https://shopee.co.id/", item.get("name"), item.get("shopid"), item.get("itemid")),
+                                "ctime": ctime_date
                             }
                             data_list.append(item_data)
 
@@ -104,6 +106,8 @@ else:
                         for item in items_data:
                             item_basic = item.get("item_basic", {})
                             if item_basic:
+                                ctime = item_basic.get("ctime")
+                                ctime_date = datetime.fromtimestamp(ctime).strftime('%Y-%m-%d') if ctime else None
                                 item_basic_data = {
                                     "source": "Tidak Aktif",
                                     "shopid": item.get("shopid"),
@@ -115,7 +119,8 @@ else:
                                     "shop_name": item_basic.get("shop_name"),
                                     "info": None,
                                     "startedDateTime": entry.get("startedDateTime", "").split("T")[0],
-                                    "url": create_shopee_url("https://shopee.co.id/", item_basic.get("name"), item.get("shopid"), item_basic.get("itemid"))
+                                    "url": create_shopee_url("https://shopee.co.id/", item_basic.get("name"), item.get("shopid"), item_basic.get("itemid")),
+                                    "ctime": ctime_date
                                 }
                                 data_list.append(item_basic_data)
 

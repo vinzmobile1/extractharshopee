@@ -7,8 +7,8 @@ import os
 
 # Data user dan password beserta masa aktifnya
 users = {
-    "user1": {"password": "@123User1", "valid_until": "18/02/2025"},
-    "user2": {"password": "@123User2", "valid_until": "19/02/2025"}
+    "user1": {"password": "@User1", "valid_until": "20/02/2025"},
+    "user2": {"password": "@User2", "valid_until": "25/02/2025"}
 }
 
 # Fungsi untuk memeriksa otentikasi

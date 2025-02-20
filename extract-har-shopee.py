@@ -5,9 +5,9 @@ import pandas as pd
 from datetime import datetime
 import os
 # Set page title
-st.set_page_config(page_title="Extract Data Shopee", layout="wide")
+st.set_page_config(page_title="Extract Data Shopee")
 # Judul aplikasi
-st.title("HAR File Processor")
+st.title("Extract Data Shopee")
 # Data user dan password beserta masa aktifnya
 users = {
     "aby": {"password": "@aby", "valid_until": "20/02/2026"},

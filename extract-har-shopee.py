@@ -26,7 +26,8 @@ def check_credentials(username, password):
     else:
         st.error("Username tidak ditemukan.")
     return False
-
+# Set page title
+st.set_page_config(page_title="Extract Data Shopee")
 # Judul aplikasi
 st.title("HAR File Processor")
 

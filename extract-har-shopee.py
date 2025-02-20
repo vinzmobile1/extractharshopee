@@ -69,7 +69,7 @@ else:
 
             for entry in entries:
                 url = entry.get("request", {}).get("url")
-                if not url or "items" not in url:
+                if not url or ("items" not in url and "recommend_post" not in url):
                     continue
 
                 try:
@@ -80,64 +80,109 @@ else:
 
                     response_data = json.loads(response_content)
 
+                    # Kelompok 1: Produk Aktif (data.items)
                     if "data" in response_data and "items" in response_data["data"]:
                         items_data = response_data["data"]["items"]
                         for item in items_data:
                             ctime = item.get("ctime")
                             ctime_date = datetime.fromtimestamp(ctime).strftime('%Y-%m-%d') if ctime else None
+                            item_rating = item.get("item_rating", {})
+                            rating_star = item_rating.get("rating_star", None)
+                            rating_count = item_rating.get("rating_count", [0])[0]  # Ambil index pertama dari rating_count
                             item_data = {
-                                "status_produk": "Aktif",
-                                "shopid": str(item.get("shopid")),  # Convert to text
-                                "itemid": str(item.get("itemid")),  # Convert to text
+                                "source": "Aktif",
+                                "upload": ctime_date,
+                                "shopid": str(item.get("shopid")),
+                                "itemid": str(item.get("itemid")),
                                 "item_name": item.get("name"),
                                 "sold_30_days": item.get("sold"),
                                 "historical_sold": item.get("historical_sold"),
                                 "price": item.get("price") / 100000 if item.get("price") else None,
                                 "shop_name": item.get("shop_name"),
-                                "info": item.get("info"),
-                                "startedDateTime": entry.get("startedDateTime", "").split("T")[0],
+                                "last update": entry.get("startedDateTime", "").split("T")[0],  # Tambahkan kolom baru
                                 "url": create_shopee_url("https://shopee.co.id/", item.get("name"), item.get("shopid"), item.get("itemid")),
-                                "upload": ctime_date
+                                "rating_star": rating_star,  # Tambahkan kolom baru untuk rating_star
+                                "rating_count": rating_count,  # Tambahkan kolom baru untuk rating_count
+                                "shop_rating": item.get("shop_rating"),
+                                "shop_location": item.get("shop_location")  
                             }
                             data_list.append(item_data)
 
+                    # Kelompok 2: Produk Tidak Aktif (items.item_basic)
                     if "items" in response_data:
                         items_data = response_data["items"]
                         for item in items_data:
                             item_basic = item.get("item_basic", {})
-                            if item_basic:
+                            if item_basic:  # Hanya proses jika item_basic tidak kosong
                                 ctime = item_basic.get("ctime")
                                 ctime_date = datetime.fromtimestamp(ctime).strftime('%Y-%m-%d') if ctime else None
+                                item_rating_basic = item_basic.get("item_rating", {})
+                                rating_star_basic = item_rating_basic.get("rating_star", None)
+                                rating_count_basic = item_rating_basic.get("rating_count", [0])[0]  # Ambil index pertama dari rating_count
                                 item_basic_data = {
-                                    "status_produk": "Tidak Aktif",
-                                    "shopid": str(item.get("shopid")),  # Convert to text
-                                    "itemid": str(item.get("itemid")),  # Convert to text
+                                    "source": "Tidak Aktif",
+                                    "upload": ctime_date,
+                                    "shopid": str(item.get("shopid")),
+                                    "itemid": str(item_basic.get("itemid")),
                                     "item_name": item_basic.get("name"),
                                     "sold_30_days": item_basic.get("sold"),
                                     "historical_sold": item_basic.get("historical_sold"),
                                     "price": item_basic.get("price") / 100000 if item_basic.get("price") else None,
                                     "shop_name": item_basic.get("shop_name"),
-                                    "info": None,
-                                    "startedDateTime": entry.get("startedDateTime", "").split("T")[0],
+                                    "last update": entry.get("startedDateTime", "").split("T")[0],  # Tambahkan kolom baru
                                     "url": create_shopee_url("https://shopee.co.id/", item_basic.get("name"), item.get("shopid"), item_basic.get("itemid")),
-                                    "upload": ctime_date
+                                    "rating_star": rating_star_basic,  # Tambahkan kolom baru untuk rating_star
+                                    "rating_count": rating_count_basic,  # Tambahkan kolom baru untuk rating_count
+                                    "shop_rating": item_basic.get("shop_rating"),
+                                    "shop_location": item_basic.get("shop_location")
                                 }
                                 data_list.append(item_basic_data)
 
+                    # Kelompok 3: Produk Serupa (data.sections.data.item) - hanya dari URL yang mengandung "recommend_post"
+                    if "data" in response_data and "sections" in response_data["data"]:
+                        sections_data = response_data["data"]["sections"]
+                        for section in sections_data:
+                            if "data" in section and "item" in section["data"]:
+                                items_data = section["data"]["item"]
+                                for item in items_data:
+                                    ctime = item.get("ctime")
+                                    ctime_date = datetime.fromtimestamp(ctime).strftime('%Y-%m-%d') if ctime else None
+                                    item_rating = item.get("item_rating", {})
+                                    rating_star = item_rating.get("rating_star", None)
+                                    rating_count = item_rating.get("rating_count", [0])[0]  # Ambil index pertama dari rating_count
+                                    item_data = {
+                                        "source": "Produk Serupa",
+                                        "upload": ctime_date,
+                                        "shopid": str(item.get("shopid")),
+                                        "itemid": str(item.get("itemid")),
+                                        "item_name": item.get("name"),
+                                        "sold_30_days": item.get("sold"),
+                                        "historical_sold": item.get("historical_sold"),
+                                        "price": item.get("price") / 100000 if item.get("price") else None,
+                                        "shop_name": item.get("shop_name"),
+                                        "last update": entry.get("startedDateTime", "").split("T")[0],  # Tambahkan kolom baru
+                                        "url": create_shopee_url("https://shopee.co.id/", item.get("name"), item.get("shopid"), item.get("itemid")),
+                                        "rating_star": rating_star,  # Tambahkan kolom baru untuk rating_star
+                                        "rating_count": rating_count,  # Tambahkan kolom baru untuk rating_count
+                                        "shop_rating": item.get("shop_rating"),
+                                        "shop_location": item.get("shop_location")  
+                                    }
+                                    data_list.append(item_data)
+
                 except json.JSONDecodeError:
-                    pass
+                    pass  # Lewati jika response content tidak valid
 
         df = pd.DataFrame(data_list)
 
         if not df.empty:
-            df['score_with_prefix'] = df['info'].str.extract(r'\{([^}]+)\}')
-            df['score_product'] = df['score_with_prefix'].str.extract(r'SCORE:([0-9.]+)')
-            df.drop(columns=['score_with_prefix'], inplace=True)
-            df.drop(columns=['info'], inplace=True)
-
             df['sold_30_days'] = pd.to_numeric(df['sold_30_days'], errors='coerce').astype('Int64')
             df['historical_sold'] = pd.to_numeric(df['historical_sold'], errors='coerce').astype('Int64')
-            df['score_product'] = pd.to_numeric(df['score_product'], errors='coerce').astype('float64')
+            df['rating_star'] = round(pd.to_numeric(df['rating_star'], errors='coerce').astype('float64'), 1)
+            df['shop_rating'] = round(pd.to_numeric(df['shop_rating'], errors='coerce').astype('float64'), 1)
+
+            # Reorder columns
+            new_order = ['source', 'url', 'last update', 'upload', 'shopid', 'itemid', 'item_name', 'sold_30_days', 'historical_sold', 'price', 'rating_star', 'rating_count', 'shop_name', 'shop_rating', 'shop_location']
+            df = df.reindex(columns=new_order)
 
         return df
 

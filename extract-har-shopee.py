@@ -4,7 +4,10 @@ import base64
 import pandas as pd
 from datetime import datetime
 import os
-
+# Set page title
+st.set_page_config(page_title="Extract Data Shopee", layout="wide")
+# Judul aplikasi
+st.title("HAR File Processor")
 # Data user dan password beserta masa aktifnya
 users = {
     "aby": {"password": "@aby", "valid_until": "20/02/2026"},
@@ -26,10 +29,7 @@ def check_credentials(username, password):
     else:
         st.error("Username tidak ditemukan.")
     return False
-# Set page title
-st.set_page_config(page_title="Extract Data Shopee", layout="wide")
-# Judul aplikasi
-st.title("HAR File Processor")
+
 
 # Form login
 if 'logged_in' not in st.session_state:

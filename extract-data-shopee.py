@@ -4,7 +4,7 @@ import base64
 import pandas as pd
 from datetime import datetime
 import os
-import io
+
 # Data user dan password beserta masa aktifnya
 users = {
     "aby": {"password": "@aby", "valid_until": "20/02/2026"},
@@ -224,18 +224,6 @@ else:
         )
 '''
 
-        # Opsi untuk mengunduh hasil sebagai Excel (xlsx)
-        excel_buffer = io.BytesIO()
-        with pd.ExcelWriter(excel_buffer, engine='xlsxwriter') as writer:
-            df.to_excel(writer, index=False, sheet_name='Sheet1')
-        excel_data = excel_buffer.getvalue()
-
-        st.download_button(
-            label="Download Excel (xlsx)",
-            data=excel_data,
-            file_name="result_data.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
     # Opsi logout
     if st.button("Logout"):
         st.session_state.logged_in = False

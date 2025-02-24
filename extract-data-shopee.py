@@ -215,22 +215,7 @@ else:
         # Tampilkan hasil
         st.subheader("Result Data")
         st.dataframe(df)
-'''
-        # Opsi untuk mengunduh hasil sebagai Excel
-        excel_file = io.BytesIO()  # Create a BytesIO object to hold the Excel file
-        with pd.ExcelWriter(excel_file, engine='xlsxwriter') as writer:
-            df.to_excel(writer, index=False, sheet_name='Shopee Data')  # Write DataFrame to Excel
 
-        # Set the cursor to the beginning of the BytesIO object
-        excel_file.seek(0)
-
-        st.download_button(
-            label="Download Excel",
-            data=excel_file,
-            file_name="result_data.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
-'''
         # Opsi untuk mengunduh hasil sebagai Excel
         excel_file = io.BytesIO()  # Create a BytesIO object to hold the Excel file
         with pd.ExcelWriter(excel_file, engine='xlsxwriter') as writer:

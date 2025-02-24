@@ -5,6 +5,7 @@ import pandas as pd
 from datetime import datetime
 import os
 import io
+import xlsxwriter
 
 # Data user dan password beserta masa aktifnya
 users = {
@@ -27,7 +28,7 @@ def check_credentials(username, password):
     else:
         st.error("Username tidak ditemukan.")
     return False
-    
+
 # Set page title
 st.set_page_config(page_title="Extract Data Shopee")
 # Judul aplikasi
@@ -215,32 +216,20 @@ else:
         st.subheader("Result Data")
         st.dataframe(df)
 
-        # Opsi untuk mengunduh hasil sebagai CSV
-        csv = df.to_csv(index=False)
-        st.download_button(
-            label="Download CSV",
-            data=csv,
-            file_name="result_data.csv",
-            mime="text/csv"
-        )
+        # Opsi untuk mengunduh hasil sebagai Excel
+        excel_file = io.BytesIO()  # Create a BytesIO object to hold the Excel file
+        with pd.ExcelWriter(excel_file, engine='xlsxwriter') as writer:
+            df.to_excel(writer, index=False, sheet_name='Shopee Data')  # Write DataFrame to Excel
 
-        # Opsi untuk mengunduh hasil sebagai XLSX
-        def to_excel(df):
-            output = io.BytesIO()
-            with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-                df.to_excel(writer, sheet_name='Sheet1', index=False)
-                writer.close()
-                processed_data = output.getvalue()
-            return processed_data
+        # Set the cursor to the beginning of the BytesIO object
+        excel_file.seek(0)
 
-        excel_data = to_excel(df)
         st.download_button(
             label="Download Excel",
-            data=excel_data,
+            data=excel_file,
             file_name="result_data.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
-
 
     # Opsi logout
     if st.button("Logout"):

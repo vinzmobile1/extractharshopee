@@ -213,7 +213,7 @@ else:
         # Tampilkan hasil
         st.subheader("Result Data")
         st.dataframe(df)
-'''
+
         # Opsi untuk mengunduh hasil sebagai CSV
         csv = df.to_csv(index=False)
         st.download_button(
@@ -222,7 +222,6 @@ else:
             file_name="result_data.csv",
             mime="text/csv"
         )
-'''
 
     # Opsi logout
     if st.button("Logout"):

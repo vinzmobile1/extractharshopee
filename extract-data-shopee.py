@@ -213,7 +213,7 @@ else:
         # Tampilkan hasil
         st.subheader("Result Data")
         st.dataframe(df)
-
+'''
         # Opsi untuk mengunduh hasil sebagai CSV
         csv = df.to_csv(index=False)
         st.download_button(
@@ -222,7 +222,20 @@ else:
             file_name="result_data.csv",
             mime="text/csv"
         )
+'''
 
+        # Opsi untuk mengunduh hasil sebagai Excel (xlsx)
+        excel_buffer = io.BytesIO()
+        with pd.ExcelWriter(excel_buffer, engine='xlsxwriter') as writer:
+            df.to_excel(writer, index=False, sheet_name='Sheet1')
+        excel_data = excel_buffer.getvalue()
+
+        st.download_button(
+            label="Download Excel (xlsx)",
+            data=excel_data,
+            file_name="result_data.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
     # Opsi logout
     if st.button("Logout"):
         st.session_state.logged_in = False

@@ -179,6 +179,7 @@ else:
         df = pd.DataFrame(data_list)
 
         if not df.empty:
+            df['item_name'] = df['item_name'].str.replace(r'\s+', ' ', regex=True)  # Ganti satu atau lebih spasi dengan satu spasi
             df['sold_30_days'] = pd.to_numeric(df['sold_30_days'], errors='coerce').astype('Int64')
             df['historical_sold'] = pd.to_numeric(df['historical_sold'], errors='coerce').astype('Int64')
             df['rating_star'] = round(pd.to_numeric(df['rating_star'], errors='coerce').astype('float64'), 1)

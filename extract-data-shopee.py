@@ -236,13 +236,11 @@ else:
 
             # Pagination
             items_per_page = 25  # Jumlah item per halaman
-            # Pastikan num_pages setidaknya 1, bahkan jika filtered_df kosong
             num_pages = max(1, (len(filtered_df) + items_per_page - 1) // items_per_page)
+            page_options = list(range(1, num_pages + 1))
+            page_number = st.selectbox("Halaman", options=page_options, index=0)
 
-            print(f"Shape of filtered_df: {filtered_df.shape}") # Debug print: Shape of filtered_df
-            print(f"num_pages: {num_pages}") # Debug print: num_pages value
 
-            page_number = st.slider("Halaman", 1, num_pages, 1)  # Slider halaman
             start_index = (page_number - 1) * items_per_page
             end_index = start_index + items_per_page
             paged_df = filtered_df.iloc[start_index:end_index]
@@ -250,9 +248,8 @@ else:
             # Tampilkan hasil
             st.subheader("Result Data")
             st.dataframe(paged_df, use_container_width=True)
-            # ... (rest of the code)
 
-            # Opsi untuk mengunduh hasil sebagai Excel (tetap sama)
+            # Opsi untuk mengunduh hasil sebagai Excel
             excel_file = io.BytesIO()  # Create a BytesIO object to hold the Excel file
             with pd.ExcelWriter(excel_file, engine='xlsxwriter') as writer:
                 filtered_df.to_excel(writer, index=False, sheet_name='Shopee Data')  # Write DataFrame to Excel

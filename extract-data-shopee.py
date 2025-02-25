@@ -62,6 +62,7 @@ else:
         return url
 
     # Fungsi untuk memproses file HAR
+    @st.cache_data
     def process_har_files(har_files):
         data_list = []
 
@@ -108,7 +109,7 @@ else:
                                 "rating_star": rating_star,  # Tambahkan kolom baru untuk rating_star
                                 "rating_count": rating_count,  # Tambahkan kolom baru untuk rating_count
                                 "shop_rating": item.get("shop_rating"),
-                                "shop_location": item.get("shop_location")  
+                                "shop_location": item.get("shop_location")
                             }
                             data_list.append(item_data)
 
@@ -134,7 +135,7 @@ else:
                                     "price": item_basic.get("price") / 100000 if item_basic.get("price") else None,
                                     "shop_name": item_basic.get("shop_name"),
                                     "last update": entry.get("startedDateTime", "").split("T")[0],  # Tambahkan kolom baru
-                                    "url": create_shopee_url("https://shopee.co.id/", item_basic.get("name"), item.get("shopid"), item_basic.get("itemid")),
+                                    "url": create_shopee_url("https://shopee.co.id/", item_basic.get("name"), item.get("shopid"), item.get("itemid")),
                                     "rating_star": rating_star_basic,  # Tambahkan kolom baru untuk rating_star
                                     "rating_count": rating_count_basic,  # Tambahkan kolom baru untuk rating_count
                                     "shop_rating": item_basic.get("shop_rating"),
@@ -169,7 +170,7 @@ else:
                                         "rating_star": rating_star,  # Tambahkan kolom baru untuk rating_star
                                         "rating_count": rating_count,  # Tambahkan kolom baru untuk rating_count
                                         "shop_rating": item.get("shop_rating"),
-                                        "shop_location": item.get("shop_location")  
+                                        "shop_location": item.get("shop_location")
                                     }
                                     data_list.append(item_data)
 
@@ -213,31 +214,49 @@ else:
         for file_path in har_files:
             os.remove(file_path)
 
-        # Tampilkan hasil
-        st.subheader("Result Data")
-        st.dataframe(df)
+        if not df.empty:
+            # Tambahkan filter dropdown
+            source_filter = st.selectbox("Filter Source", options=['All'] + sorted(df['source'].unique().tolist()))
+            item_name_filter = st.selectbox("Filter Item Name", options=['All'] + sorted(df['item_name'].unique().tolist()))
+            shop_name_filter = st.selectbox("Filter Shop Name", options=['All'] + sorted(df['shop_name'].unique().tolist()))
 
-        # Opsi untuk mengunduh hasil sebagai Excel
-        excel_file = io.BytesIO()  # Create a BytesIO object to hold the Excel file
-        with pd.ExcelWriter(excel_file, engine='xlsxwriter') as writer:
-            df.to_excel(writer, index=False, sheet_name='Shopee Data')  # Write DataFrame to Excel
-        
-        # Set the cursor to the beginning of the BytesIO object
-        excel_file.seek(0)
-        
-        # Mendapatkan tanggal dan waktu saat ini
-        current_time = datetime.now().strftime("%d-%m-%Y %H:%M")
-        
-        # Membuat nama file berdasarkan tanggal dan waktu
-        file_name = f"Extract Shopee {current_time}.xlsx"
-        
-        # Tombol untuk mengunduh file Excel
-        st.download_button(
-            label="Download Excel",
-            data=excel_file,
-            file_name=file_name,
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
+            # Filter DataFrame berdasarkan dropdown
+            filtered_df = df.copy()
+            if source_filter != 'All':
+                filtered_df = filtered_df[filtered_df['source'] == source_filter]
+            if item_name_filter != 'All':
+                filtered_df = filtered_df[filtered_df['item_name'] == item_name_filter]
+            if shop_name_filter != 'All':
+                filtered_df = filtered_df[filtered_df['shop_name'] == shop_name_filter]
+
+            # Tampilkan hasil
+            st.subheader("Result Data")
+            st.dataframe(filtered_df)
+
+            # Opsi untuk mengunduh hasil sebagai Excel
+            excel_file = io.BytesIO()  # Create a BytesIO object to hold the Excel file
+            with pd.ExcelWriter(excel_file, engine='xlsxwriter') as writer:
+                filtered_df.to_excel(writer, index=False, sheet_name='Shopee Data')  # Write DataFrame to Excel
+
+            # Set the cursor to the beginning of the BytesIO object
+            excel_file.seek(0)
+
+            # Mendapatkan tanggal dan waktu saat ini
+            current_time = datetime.now().strftime("%d-%m-%Y %H:%M")
+
+            # Membuat nama file berdasarkan tanggal dan waktu
+            file_name = f"Extract Shopee {current_time}.xlsx"
+
+            # Tombol untuk mengunduh file Excel
+            st.download_button(
+                label="Download Excel",
+                data=excel_file,
+                file_name=file_name,
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+        else:
+            st.warning("No data extracted from the uploaded HAR files.")
+
     # Opsi logout
     if st.button("Logout"):
         st.session_state.logged_in = False

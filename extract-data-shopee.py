@@ -215,12 +215,17 @@ else:
             os.remove(file_path)
 
         if not df.empty:
-            # Tambahkan filter dropdown (tetap sama)
-            source_filter = st.selectbox("Filter Source", options=['All'] + sorted(df['source'].unique().tolist()))
-            item_name_filter = st.selectbox("Filter Item Name", options=['All'] + sorted(df['item_name'].unique().tolist()))
-            shop_name_filter = st.selectbox("Filter Shop Name", options=['All'] + sorted(df['shop_name'].unique().tolist()))
-    
-            # Filter DataFrame berdasarkan dropdown (tetap sama)
+            # Buat 3 kolom untuk dropdown filter
+            col1, col2, col3 = st.columns(3)
+
+            with col1:
+                source_filter = st.selectbox("Filter Source", options=['All'] + sorted(df['source'].unique().tolist()))
+            with col2:
+                item_name_filter = st.selectbox("Filter Item Name", options=['All'] + sorted(df['item_name'].unique().tolist()))
+            with col3:
+                shop_name_filter = st.selectbox("Filter Shop Name", options=['All'] + sorted(df['shop_name'].unique().tolist()))
+
+            # Filter DataFrame berdasarkan dropdown
             filtered_df = df.copy()
             if source_filter != 'All':
                 filtered_df = filtered_df[filtered_df['source'] == source_filter]
@@ -228,20 +233,20 @@ else:
                 filtered_df = filtered_df[filtered_df['item_name'] == item_name_filter]
             if shop_name_filter != 'All':
                 filtered_df = filtered_df[filtered_df['shop_name'] == shop_name_filter]
-    
-            # Pagination
+
+            # Pagination (tetap sama)
             items_per_page = 25  # Jumlah item per halaman
             num_pages = (len(filtered_df) + items_per_page - 1) // items_per_page
             page_number = st.slider("Halaman", 1, num_pages, 1)  # Slider halaman
             start_index = (page_number - 1) * items_per_page
             end_index = start_index + items_per_page
             paged_df = filtered_df.iloc[start_index:end_index]
-    
-            # Tampilkan hasil (gunakan paged_df)
-            st.subheader("Result Data")
-            st.dataframe(paged_df) # Tampilkan paged_df bukan filtered_df
 
-            # Opsi untuk mengunduh hasil sebagai Excel
+            # Tampilkan hasil
+            st.subheader("Result Data")
+            st.dataframe(paged_df, use_container_width=True)
+
+            # Opsi untuk mengunduh hasil sebagai Excel (tetap sama)
             excel_file = io.BytesIO()  # Create a BytesIO object to hold the Excel file
             with pd.ExcelWriter(excel_file, engine='xlsxwriter') as writer:
                 filtered_df.to_excel(writer, index=False, sheet_name='Shopee Data')  # Write DataFrame to Excel

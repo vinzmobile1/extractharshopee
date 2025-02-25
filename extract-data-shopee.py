@@ -219,20 +219,20 @@ else:
             col1, col2, col3 = st.columns(3)
 
             with col1:
-                source_filter = st.selectbox("Filter Source", options=['All'] + sorted(df['source'].unique().tolist()))
+                source_filter = st.multiselect("Filter Source", options=sorted(df['source'].unique().tolist()), default=None)
             with col2:
-                item_name_filter = st.selectbox("Filter Item Name", options=['All'] + sorted(df['item_name'].unique().tolist()))
+                item_name_filter = st.multiselect("Filter Item Name", options=sorted(df['item_name'].unique().tolist()), default=None)
             with col3:
-                shop_name_filter = st.selectbox("Filter Shop Name", options=['All'] + sorted(df['shop_name'].unique().tolist()))
+                shop_name_filter = st.multiselect("Filter Shop Name", options=sorted(df['shop_name'].unique().tolist()), default=None)
 
             # Filter DataFrame berdasarkan dropdown
             filtered_df = df.copy()
-            if source_filter != 'All':
-                filtered_df = filtered_df[filtered_df['source'] == source_filter]
-            if item_name_filter != 'All':
-                filtered_df = filtered_df[filtered_df['item_name'] == item_name_filter]
-            if shop_name_filter != 'All':
-                filtered_df = filtered_df[filtered_df['shop_name'] == shop_name_filter]
+            if source_filter: # Check if source_filter list is not empty
+                filtered_df = filtered_df[filtered_df['source'].isin(source_filter)]
+            if item_name_filter: # Check if item_name_filter list is not empty
+                filtered_df = filtered_df[filtered_df['item_name'].isin(item_name_filter)]
+            if shop_name_filter: # Check if shop_name_filter list is not empty
+                filtered_df = filtered_df[filtered_df['shop_name'].isin(shop_name_filter)]
 
             # Pagination
             items_per_page = 25  # Jumlah item per halaman

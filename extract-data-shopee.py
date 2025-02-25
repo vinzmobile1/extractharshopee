@@ -215,12 +215,12 @@ else:
             os.remove(file_path)
 
         if not df.empty:
-            # Tambahkan filter dropdown
+            # Tambahkan filter dropdown (tetap sama)
             source_filter = st.selectbox("Filter Source", options=['All'] + sorted(df['source'].unique().tolist()))
             item_name_filter = st.selectbox("Filter Item Name", options=['All'] + sorted(df['item_name'].unique().tolist()))
             shop_name_filter = st.selectbox("Filter Shop Name", options=['All'] + sorted(df['shop_name'].unique().tolist()))
-
-            # Filter DataFrame berdasarkan dropdown
+    
+            # Filter DataFrame berdasarkan dropdown (tetap sama)
             filtered_df = df.copy()
             if source_filter != 'All':
                 filtered_df = filtered_df[filtered_df['source'] == source_filter]
@@ -228,10 +228,18 @@ else:
                 filtered_df = filtered_df[filtered_df['item_name'] == item_name_filter]
             if shop_name_filter != 'All':
                 filtered_df = filtered_df[filtered_df['shop_name'] == shop_name_filter]
-
-            # Tampilkan hasil
+    
+            # Pagination
+            items_per_page = 25  # Jumlah item per halaman
+            num_pages = (len(filtered_df) + items_per_page - 1) // items_per_page
+            page_number = st.slider("Halaman", 1, num_pages, 1)  # Slider halaman
+            start_index = (page_number - 1) * items_per_page
+            end_index = start_index + items_per_page
+            paged_df = filtered_df.iloc[start_index:end_index]
+    
+            # Tampilkan hasil (gunakan paged_df)
             st.subheader("Result Data")
-            st.dataframe(filtered_df)
+            st.dataframe(paged_df) # Tampilkan paged_df bukan filtered_df
 
             # Opsi untuk mengunduh hasil sebagai Excel
             excel_file = io.BytesIO()  # Create a BytesIO object to hold the Excel file

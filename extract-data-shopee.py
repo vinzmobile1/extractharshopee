@@ -52,7 +52,7 @@ if not st.session_state.logged_in:
 else:
     # Jika sudah login, tampilkan halaman pemrosesan file HAR
     st.markdown("""
-    Aplikasi ini memproses file HAR, mengekstrak data produk dari Shopee, dan menghasilkan URL produk.
+    Aplikasi ini memproses file HAR, mengekstrak data produk dari Shopee.
     """)
 
     # Fungsi untuk membuat URL

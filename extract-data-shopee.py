@@ -52,7 +52,7 @@ if not st.session_state.logged_in:
 else:
     # Jika sudah login, tampilkan halaman pemrosesan file HAR
     st.markdown("""
-    Aplikasi ini memproses file HAR, mengekstrak data produk dari Shopee.
+    Aplikasi ini memproses file HAR, mengekstrak data produk dari Shopee, dan menghasilkan URL produk.
     """)
 
     # Fungsi untuk membuat URL
@@ -187,7 +187,7 @@ else:
             df['shop_rating'] = round(pd.to_numeric(df['shop_rating'], errors='coerce').astype('float64'), 1)
 
             # Reorder columns
-            new_order = ['source', 'last update', 'upload', 'shopid', 'itemid', 'item_name', 'price', 'sold_30_days', 'historical_sold', 'url', 'rating_star', 'rating_count', 'shop_name', 'shop_rating', 'shop_location']
+            new_order = ['source', 'url', 'last update', 'upload', 'shopid', 'itemid', 'item_name', 'sold_30_days', 'historical_sold', 'price', 'rating_star', 'rating_count', 'shop_name', 'shop_rating', 'shop_location']
             df = df.reindex(columns=new_order)
 
         return df
@@ -234,25 +234,33 @@ else:
             if shop_name_filter: # Check if shop_name_filter list is not empty
                 filtered_df = filtered_df[filtered_df['shop_name'].isin(shop_name_filter)]
 
-            # Pagination
-            items_per_page = 25  # Jumlah item per halaman
-            num_pages = max(1, (len(filtered_df) + items_per_page - 1) // items_per_page)
-            page_options = list(range(1, num_pages + 1))
-            page_number = st.selectbox("Halaman", options=page_options, index=0)
+            # Checkbox untuk menampilkan semua data
+            show_all_data = st.checkbox("Tampilkan Semua Data (Tanpa Pagination)", value=False)
 
+            if show_all_data:
+                # Tampilkan seluruh DataFrame tanpa pagination
+                st.subheader("Result Data (Semua Data)")
+                st.dataframe(filtered_df, use_container_width=True)
+                data_to_download = filtered_df # Download seluruh filtered_df
+            else:
+                # Pagination
+                items_per_page = 25  # Jumlah item per halaman
+                num_pages = max(1, (len(filtered_df) + items_per_page - 1) // items_per_page)
+                page_options = list(range(1, num_pages + 1))
+                page_number = st.selectbox("Halaman", options=page_options, index=0)
+                start_index = (page_number - 1) * items_per_page
+                end_index = start_index + items_per_page
+                paged_df = filtered_df.iloc[start_index:end_index]
 
-            start_index = (page_number - 1) * items_per_page
-            end_index = start_index + items_per_page
-            paged_df = filtered_df.iloc[start_index:end_index]
-
-            # Tampilkan hasil
-            st.subheader("Result Data")
-            st.dataframe(paged_df, use_container_width=True)
+                # Tampilkan hasil dengan pagination
+                st.subheader("Result Data (Halaman {})".format(page_number))
+                st.dataframe(paged_df, use_container_width=True)
+                data_to_download = filtered_df # Download seluruh filtered_df
 
             # Opsi untuk mengunduh hasil sebagai Excel
             excel_file = io.BytesIO()  # Create a BytesIO object to hold the Excel file
             with pd.ExcelWriter(excel_file, engine='xlsxwriter') as writer:
-                filtered_df.to_excel(writer, index=False, sheet_name='Shopee Data')  # Write DataFrame to Excel
+                data_to_download.to_excel(writer, index=False, sheet_name='Shopee Data')  # Write DataFrame to Excel
 
             # Set the cursor to the beginning of the BytesIO object
             excel_file.seek(0)

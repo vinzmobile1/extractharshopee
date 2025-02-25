@@ -187,7 +187,7 @@ else:
             df['shop_rating'] = round(pd.to_numeric(df['shop_rating'], errors='coerce').astype('float64'), 1)
 
             # Reorder columns
-            new_order = ['source', 'url', 'last update', 'upload', 'shopid', 'itemid', 'item_name', 'sold_30_days', 'historical_sold', 'price', 'rating_star', 'rating_count', 'shop_name', 'shop_rating', 'shop_location']
+            new_order = ['source', 'last update', 'upload', 'shopid', 'itemid', 'item_name', 'price', 'sold_30_days', 'historical_sold', 'url', 'rating_star', 'rating_count', 'shop_name', 'shop_rating', 'shop_location']
             df = df.reindex(columns=new_order)
 
         return df

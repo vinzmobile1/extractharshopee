@@ -236,13 +236,11 @@ else:
 
             # Pagination
             items_per_page = 25  # Jumlah item per halaman
-            # Pastikan num_pages setidaknya 1, bahkan jika filtered_df kosong
             num_pages = max(1, (len(filtered_df) + items_per_page - 1) // items_per_page)
+            page_options = list(range(1, num_pages + 1))
+            page_number = st.selectbox("Halaman", options=page_options, index=0)
 
-            print(f"Shape of filtered_df: {filtered_df.shape}") # Debug print: Shape of filtered_df
-            print(f"num_pages: {num_pages}") # Debug print: num_pages value
 
-            page_number = st.slider("Halaman", 1, num_pages, 1)  # Slider halaman
             start_index = (page_number - 1) * items_per_page
             end_index = start_index + items_per_page
             paged_df = filtered_df.iloc[start_index:end_index]

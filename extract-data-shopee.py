@@ -234,9 +234,10 @@ else:
             if shop_name_filter != 'All':
                 filtered_df = filtered_df[filtered_df['shop_name'] == shop_name_filter]
 
-            # Pagination (tetap sama)
+            # Pagination
             items_per_page = 25  # Jumlah item per halaman
-            num_pages = (len(filtered_df) + items_per_page - 1) // items_per_page
+            # Pastikan num_pages setidaknya 1, bahkan jika filtered_df kosong
+            num_pages = max(1, (len(filtered_df) + items_per_page - 1) // items_per_page)
             page_number = st.slider("Halaman", 1, num_pages, 1)  # Slider halaman
             start_index = (page_number - 1) * items_per_page
             end_index = start_index + items_per_page

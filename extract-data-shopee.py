@@ -79,6 +79,7 @@ def ekstrak_dan_simpan_data(file):
                 rating_count = find_nested_value(item, "item_rating.rating_count", "N/A")
                 if isinstance(rating_count, list) and rating_count:
                     rating_count = rating_count[0]
+                rating_count = int(rating_count) if str(rating_count).isdigit() else 0
                 ctime = find_value(item, ["ctime"])
                 ctime = datetime.datetime.fromtimestamp(ctime).strftime('%Y-%m-%d') if isinstance(ctime, (int, float)) else "N/A"
                 shopee_url = create_shopee_url("https://shopee.co.id/", name, shopid, itemid)

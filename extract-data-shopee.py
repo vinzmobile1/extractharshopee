@@ -86,7 +86,7 @@ def ekstrak_dan_simpan_data(file):
                 data_list.append({
                     "itemid": itemid,
                     "shopid": shopid,                    
-                    "Tanggal Upload": ctime,
+                    "upload_date": ctime,
                     "shop_name": shop_name,
                     "item_name": name,
                     "price": price,

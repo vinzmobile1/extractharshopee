@@ -144,6 +144,7 @@ else:
 
         if all_dataframes:
             final_df = pd.concat(all_dataframes, ignore_index=True)
+            final_df.fillna("", inplace=True)
             st.dataframe(final_df, use_container_width=True)
             excel_file = io.BytesIO()
             with pd.ExcelWriter(excel_file, engine='xlsxwriter') as writer:

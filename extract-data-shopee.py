@@ -81,12 +81,12 @@ def ekstrak_dan_simpan_data(file):
                     rating_count = rating_count[0]
                 rating_count = int(rating_count) if str(rating_count).isdigit() else 0
                 ctime = find_value(item, ["ctime"])
-                ctime = datetime.datetime.fromtimestamp(ctime).strftime('%Y-%m-%d %H:%M:%S') if isinstance(ctime, (int, float)) else "N/A"
+                ctime = datetime.datetime.fromtimestamp(ctime).strftime('%Y-%m-%d') if isinstance(ctime, (int, float)) else "N/A"
                 shopee_url = create_shopee_url("https://shopee.co.id/", name, shopid, itemid)
                 data_list.append({
                     "itemid": itemid,
                     "shopid": shopid,                    
-                    "Tanggal Upload": ctime,
+                    "upload_date": ctime,
                     "shop_name": shop_name,
                     "item_name": name,
                     "price": price,

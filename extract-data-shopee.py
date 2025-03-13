@@ -80,7 +80,7 @@ def ekstrak_dan_simpan_data(file):
                 if isinstance(rating_count, list) and rating_count:
                     rating_count = rating_count[0]
                 ctime = find_value(item, ["ctime"])
-                ctime = datetime.datetime.fromtimestamp(ctime).strftime('%Y-%m-%d %H:%M:%S') if isinstance(ctime, (int, float)) else "N/A"
+                ctime = datetime.datetime.fromtimestamp(ctime).strftime('%Y-%m-%d') if isinstance(ctime, (int, float)) else "N/A"
                 shopee_url = create_shopee_url("https://shopee.co.id/", name, shopid, itemid)
                 data_list.append({
                     "itemid": itemid,

@@ -5,6 +5,7 @@ import datetime
 import pandas as pd
 import streamlit as st
 from urllib.parse import quote
+from io import BytesIO
 
 def trim_name(name):
     return " ".join(name.split()) if isinstance(name, str) else name
@@ -110,7 +111,12 @@ if uploaded_files:
         final_df = pd.concat(all_dataframes, ignore_index=True)
         st.write("### Data Extracted")
         st.dataframe(final_df)
-        csv = final_df.to_csv(index=False).encode('utf-8')
-        st.download_button("Download CSV", csv, "shopee_data.csv", "text/csv")
+        
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            final_df.to_excel(writer, index=False, sheet_name="Shopee Data")
+            writer.book.close()
+        output.seek(0)
+        st.download_button("Download Excel", output, "shopee_data.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     else:
         st.warning("No valid data extracted from the uploaded files.")

@@ -81,12 +81,12 @@ def ekstrak_dan_simpan_data(file):
                     rating_count = rating_count[0]
                 rating_count = int(rating_count) if str(rating_count).isdigit() else 0
                 ctime = find_value(item, ["ctime"])
-                ctime = datetime.datetime.fromtimestamp(ctime).strftime('%Y-%m-%d') if isinstance(ctime, (int, float)) else "N/A"
+                ctime = datetime.datetime.fromtimestamp(ctime).strftime('%Y-%m-%d %H:%M:%S') if isinstance(ctime, (int, float)) else "N/A"
                 shopee_url = create_shopee_url("https://shopee.co.id/", name, shopid, itemid)
                 data_list.append({
                     "itemid": itemid,
                     "shopid": shopid,                    
-                    "upload_date": ctime,
+                    "Tanggal Upload": ctime,
                     "shop_name": shop_name,
                     "item_name": name,
                     "price": price,
@@ -113,8 +113,12 @@ if uploaded_files:
         st.write("### Data Extracted")
         
         if not final_df.empty:
+            final_df['total_revenue'] = final_df['sold_30_days'] * final_df['price']
+            bar_chart_data = final_df.groupby('shop_name')['total_revenue'].sum().reset_index()
+            
+            st.bar_chart(bar_chart_data, x='shop_name', y='total_revenue', x_label='Shop Name', y_label='Total Revenue', use_container_width=True)
+            
             col1, col2 = st.columns(2)
-
             with col1:
                 item_name_filter = st.multiselect("Filter Item Name", options=sorted(final_df['item_name'].unique().tolist()), default=None)
             with col2:
@@ -129,7 +133,7 @@ if uploaded_files:
             row_count = len(filtered_df)
             st.write(f"Total Data: {row_count} Baris")
             st.dataframe(filtered_df, use_container_width=True)
-            
+        
         output = BytesIO()
         with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
             final_df.to_excel(writer, index=False, sheet_name="Shopee Data")

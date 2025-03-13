@@ -76,7 +76,7 @@ def ekstrak_dan_simpan_data(file):
                 rating_star = round(find_value(item, ["rating_star"], 0), 1)
                 historical_sold = find_value(item, ["historical_sold_count", "historical_sold"], 0)
                 monthly_sold = find_value(item, ["monthly_sold_count", "sold"], 0)
-                rating_count = int(find_nested_value(item, "item_rating.rating_count", "N/A"))
+                rating_count = find_nested_value(item, "item_rating.rating_count", "N/A")
                 if isinstance(rating_count, list) and rating_count:
                     rating_count = rating_count[0]
                 ctime = find_value(item, ["ctime"])

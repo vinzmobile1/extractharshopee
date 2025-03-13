@@ -133,7 +133,7 @@ else:
                         "rating_count": rating_count,
                     })
         except Exception as e:
-            print(f"Error processing file: {e}")
+            st.error(f"Error processing file: {e}")
         return pd.DataFrame(data_list) if data_list else None
 
     uploaded_files = st.file_uploader("Upload HAR files", type=["har"], accept_multiple_files=True)

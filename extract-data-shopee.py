@@ -81,12 +81,12 @@ def ekstrak_dan_simpan_data(file):
                     rating_count = rating_count[0]
                 rating_count = int(rating_count) if str(rating_count).isdigit() else 0
                 ctime = find_value(item, ["ctime"])
-                ctime = datetime.datetime.fromtimestamp(ctime).strftime('%Y-%m-%d') if isinstance(ctime, (int, float)) else "N/A"
+                ctime = datetime.datetime.fromtimestamp(ctime).strftime('%Y-%m-%d %H:%M:%S') if isinstance(ctime, (int, float)) else "N/A"
                 shopee_url = create_shopee_url("https://shopee.co.id/", name, shopid, itemid)
                 data_list.append({
                     "itemid": itemid,
                     "shopid": shopid,                    
-                    "upload_date": ctime,
+                    "Tanggal Upload": ctime,
                     "shop_name": shop_name,
                     "item_name": name,
                     "price": price,
@@ -111,8 +111,25 @@ if uploaded_files:
     if all_dataframes:
         final_df = pd.concat(all_dataframes, ignore_index=True)
         st.write("### Data Extracted")
-        st.dataframe(final_df)
         
+        if not final_df.empty:
+            col1, col2 = st.columns(2)
+
+            with col1:
+                item_name_filter = st.multiselect("Filter Item Name", options=sorted(final_df['item_name'].unique().tolist()), default=None)
+            with col2:
+                shop_name_filter = st.multiselect("Filter Shop Name", options=sorted(final_df['shop_name'].unique().tolist()), default=None)
+            
+            filtered_df = final_df.copy()
+            if item_name_filter:
+                filtered_df = filtered_df[filtered_df['item_name'].isin(item_name_filter)]
+            if shop_name_filter:
+                filtered_df = filtered_df[filtered_df['shop_name'].isin(shop_name_filter)]
+            
+            row_count = len(filtered_df)
+            st.write(f"Total Data: {row_count} Baris")
+            st.dataframe(filtered_df, use_container_width=True)
+            
         output = BytesIO()
         with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
             final_df.to_excel(writer, index=False, sheet_name="Shopee Data")

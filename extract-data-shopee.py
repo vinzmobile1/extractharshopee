@@ -49,36 +49,6 @@ else:
     Aplikasi ini memproses file HAR, mengekstrak data produk dari Shopee, dan menghasilkan URL produk.
     """)
 
-    def trim_name(name):
-        return " ".join(name.split()) if isinstance(name, str) else name
-
-    def find_nested_value(data, path, default="N/A"):
-        keys = path.split(".")
-        for key in keys:
-            if isinstance(data, dict) and key in data:
-                data = data[key]
-            elif isinstance(data, list) and key.isdigit() and len(data) > int(key):
-                data = data[int(key)]
-            else:
-                return default
-        return data
-
-    def find_value(data, keys, default="N/A"):
-        if isinstance(data, dict):
-            for key in keys:
-                if key in data:
-                    return data[key]
-            for v in data.values():
-                result = find_value(v, keys, default)
-                if result != default:
-                    return result
-        elif isinstance(data, list):
-            for item in data:
-                result = find_value(item, keys, default)
-                if result != default:
-                    return result
-        return default
-
     def create_shopee_url(awalan, name, shopid, itemid):
         name_formatted = name.replace(' ', '-')
         return f"{awalan}{name_formatted}-i.{shopid}.{itemid}"
@@ -108,13 +78,24 @@ else:
                 for item in item_lists:
                     itemid = str(find_value(item, ["itemid"]))
                     shopid = str(find_value(item, ["shopid"]))
-                    name = trim_name(find_nested_value(item, "item_basic.name", "N/A"))
+                    name = trim_name(find_nested_value(item, "item_card_displayed_asset.name"))
+                    if name == "N/A":
+                        name = trim_name(find_nested_value(item, "item_basic.name"))
+                    if name == "N/A":
+                        name = trim_name(find_nested_value(item, "name"))
+
                     price = find_value(item, ["price"], 0) / 100000
                     shop_name = find_value(item, ["shop_name"])
                     rating_star = round(find_value(item, ["rating_star"], 0), 1)
                     historical_sold = find_value(item, ["historical_sold_count", "historical_sold"], 0)
                     monthly_sold = find_value(item, ["monthly_sold_count", "sold"], 0)
                     rating_count = find_nested_value(item, "item_rating.rating_count", "N/A")
+                    if rating_count == "N/A" or not isinstance(rating_count, list):
+                        rating_count = find_nested_value(item, "items.item_basic.item_rating.rating_count", "N/A")
+                    if rating_count == "N/A" or not isinstance(rating_count, list):
+                        rating_count = find_value(item, ["rating_count"], "N/A")
+                    rating_count = rating_count[0] if isinstance(rating_count, list) and len(rating_count) > 0 else "N/A"
+
                     ctime = find_value(item, ["ctime"])
                     ctime = datetime.datetime.fromtimestamp(ctime).strftime('%Y-%m-%d %H:%M:%S') if isinstance(ctime, (int, float)) else "N/A"
                     shopee_url = create_shopee_url("https://shopee.co.id/", name, shopid, itemid)

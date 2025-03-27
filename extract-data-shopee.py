@@ -6,6 +6,7 @@ import pandas as pd
 import streamlit as st
 from urllib.parse import quote
 from io import BytesIO
+import re
 
 def trim_name(name):
     return " ".join(name.split()) if isinstance(name, str) else name
@@ -37,9 +38,12 @@ def find_value(data, keys, default="N/A"):
                 return result
     return default
 
-def create_shopee_url(awalan, name, shopid, itemid):
-    name_formatted = name.replace(' ', '-')
-    return f"{awalan}{name_formatted}-i.{shopid}.{itemid}"
+def create_shopee_url(base_url: str, name: str, shopid: str, itemid: str) -> str:
+    if not all([base_url, name, shopid, itemid]):
+        return ""
+    name_cleaned = re.sub(r"[^\w\s-]", "", name).strip().lower().replace(" ", "-")
+    name_cleaned = re.sub(r"-{2,}", "-", name_cleaned)
+    return f"{base_url.rstrip('/')}/{quote(name_cleaned)}-i.{shopid}.{itemid}"
 
 def ekstrak_dan_simpan_data(file):
     data_list = []
@@ -116,7 +120,7 @@ if uploaded_files:
             final_df['total_revenue'] = final_df['sold_30_days'] * final_df['price']
             bar_chart_data = final_df.groupby('shop_name')['total_revenue'].sum().reset_index()
             bar_chart_data = bar_chart_data.sort_values(by='total_revenue', ascending=False)
-            st.bar_chart(bar_chart_data, x='shop_name', y='total_revenue', x_label='Shop Name', y_label='Total Revenue', use_container_width=True, horizontal=True)
+            st.bar_chart(bar_chart_data, x='shop_name', y='total_revenue', use_container_width=True)
             
             col1, col2 = st.columns(2)
             with col1:
@@ -130,14 +134,12 @@ if uploaded_files:
             if shop_name_filter:
                 filtered_df = filtered_df[filtered_df['shop_name'].isin(shop_name_filter)]
             
-            row_count = len(filtered_df)
-            st.write(f"Total Data: {row_count} Baris")
+            st.write(f"Total Data: {len(filtered_df)} Baris")
             st.dataframe(filtered_df, use_container_width=True)
         
         output = BytesIO()
         with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
             final_df.to_excel(writer, index=False, sheet_name="Shopee Data")
-            writer.book.close()
         output.seek(0)
         st.download_button("Download Excel", output, "shopee_data.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     else:

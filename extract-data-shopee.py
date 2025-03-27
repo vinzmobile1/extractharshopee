@@ -144,7 +144,7 @@ if uploaded_files:
                 use_container_width=True,
                 column_config={
                     "shopee_url": st.column_config.LinkColumn(
-                        "Shopee URL", help="Klik untuk melihat produk di Shopee"
+                        "Shopee URL", help="Klik untuk melihat produk di Shopee", width="small"
                     )
                 }
             )

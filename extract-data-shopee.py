@@ -124,7 +124,7 @@ if uploaded_files:
             final_df['total_revenue'] = final_df['sold_30_days'] * final_df['price']
             bar_chart_data = final_df.groupby('shop_name')['total_revenue'].sum().reset_index()
             bar_chart_data = bar_chart_data.sort_values(by='total_revenue', ascending=False)
-            st.bar_chart(bar_chart_data, x='shop_name', y='total_revenue', use_container_width=True)
+            st.bar_chart(bar_chart_data, x='shop_name', y='total_revenue', use_container_width=True, horizontal=True)
             
             col1, col2 = st.columns(2)
             with col1:

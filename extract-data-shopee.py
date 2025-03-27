@@ -41,8 +41,12 @@ def find_value(data, keys, default="N/A"):
 def create_shopee_url(base_url: str, name: str, shopid: str, itemid: str) -> str:
     if not all([base_url, name, shopid, itemid]):
         return ""
-    name_cleaned = re.sub(r"[^\w\s-]", "", name).strip().lower().replace(" ", "-")
-    name_cleaned = re.sub(r"-{2,}", "-", name_cleaned)
+    
+    # Bersihkan nama produk dari karakter tidak valid
+    name_cleaned = re.sub(r"[^a-zA-Z0-9\s-]", "", name)  # Hanya huruf, angka, spasi, dan strip
+    name_cleaned = name_cleaned.strip().lower().replace(" ", "-")  # Ganti spasi dengan '-'
+    name_cleaned = re.sub(r"-{2,}", "-", name_cleaned)  # Hapus strip ganda
+    
     return f"{base_url.rstrip('/')}/{quote(name_cleaned)}-i.{shopid}.{itemid}"
 
 def ekstrak_dan_simpan_data(file):

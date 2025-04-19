@@ -146,7 +146,7 @@ if uploaded_files:
             chart = (bars + text).properties(
                 width='container',
                 height=600,
-                title='Total Revenue Last 30 Days'
+                title='Total Revenue Shopee Last 30 Days'
             ).interactive()
             
             st.altair_chart(chart, use_container_width=True)

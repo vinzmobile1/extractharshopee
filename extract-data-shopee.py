@@ -136,7 +136,8 @@ if uploaded_files:
             text = base.mark_text(
                 align='left',
                 baseline='middle',
-                dx=3  # Jarak horizontal dari batang
+                dx=3,  # Jarak horizontal dari batang
+                color='#1f77b4'
             ).encode(
                 text=alt.Text('total_revenue:Q', format=',.0f')  # Format ribuan
             )

@@ -130,7 +130,7 @@ if uploaded_files:
                 tooltip=['shop_name', 'total_revenue']
             ).properties(
                 width='container',
-                height=400,
+                height=600,
                 title='Total Revenue per Shop'
             ).interactive()
             

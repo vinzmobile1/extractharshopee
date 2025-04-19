@@ -127,6 +127,7 @@ if uploaded_files:
             chart = alt.Chart(bar_chart_data).mark_bar().encode(
                 x=alt.X('total_revenue:Q', title='Total Revenue'),
                 y=alt.Y('shop_name:N', sort='-x', title='Shop Name'),
+                text='total_revenue',
                 tooltip=['shop_name', 'total_revenue']
             ).properties(
                 width='container',

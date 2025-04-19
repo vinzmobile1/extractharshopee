@@ -92,15 +92,15 @@ def ekstrak_dan_simpan_data(file):
                 ctime = datetime.datetime.fromtimestamp(ctime).strftime('%Y-%m-%d') if isinstance(ctime, (int, float)) else "N/A"
                 shopee_url = create_shopee_url("https://shopee.co.id/", name, shopid, itemid)
                 data_list.append({
-                    "itemid": itemid,
-                    "shopid": shopid,                    
-                    "upload_date": ctime,
-                    "shop_name": shop_name,
                     "item_name": name,
                     "price": price,
                     "sold_30_days": monthly_sold,
                     "historical_sold": historical_sold,
-                    "shopee_url": shopee_url,                    
+                    "shopee_url": shopee_url,
+                    "shop_name": shop_name,
+                    "itemid": itemid,
+                    "shopid": shopid,                    
+                    "upload_date": ctime,                    
                     "rating_star": rating_star,
                     "rating_count": rating_count,
                 })

@@ -124,12 +124,24 @@ if uploaded_files:
             final_df['total_revenue'] = final_df['sold_30_days'] * final_df['price']
             bar_chart_data = final_df.groupby('shop_name')['total_revenue'].sum().reset_index()
             bar_chart_data = bar_chart_data.sort_values(by='total_revenue', ascending=False)
-            chart = alt.Chart(bar_chart_data).mark_bar().encode(
+            base = alt.Chart(bar_chart_data).encode(
                 x=alt.X('total_revenue:Q', title='Total Revenue'),
-                y=alt.Y('shop_name:N', sort='-x', title='Shop Name'),
-                text='total_revenue',
+                y=alt.Y('shop_name:N', sort='-x', title='Shop Name')
+            )
+            
+            bars = base.mark_bar().encode(
                 tooltip=['shop_name', 'total_revenue']
-            ).properties(
+            )
+            
+            text = base.mark_text(
+                align='left',
+                baseline='middle',
+                dx=3  # Jarak horizontal dari batang
+            ).encode(
+                text=alt.Text('total_revenue:Q', format=',.0f')  # Format ribuan
+            )
+            
+            chart = (bars + text).properties(
                 width='container',
                 height=600,
                 title='Total Revenue per Shop'

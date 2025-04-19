@@ -7,6 +7,7 @@ import streamlit as st
 from urllib.parse import quote
 from io import BytesIO
 import re
+import altair as alt
 
 def trim_name(name):
     return " ".join(name.split()) if isinstance(name, str) else name
@@ -123,7 +124,17 @@ if uploaded_files:
             final_df['total_revenue'] = final_df['sold_30_days'] * final_df['price']
             bar_chart_data = final_df.groupby('shop_name')['total_revenue'].sum().reset_index()
             bar_chart_data = bar_chart_data.sort_values(by='total_revenue', ascending=False)
-            st.bar_chart(bar_chart_data, x='shop_name', y='total_revenue', use_container_width=True, horizontal=True)
+            chart = alt.Chart(bar_chart_data).mark_bar().encode(
+                x=alt.X('total_revenue:Q', title='Total Revenue'),
+                y=alt.Y('shop_name:N', sort='-x', title='Shop Name'),
+                tooltip=['shop_name', 'total_revenue']
+            ).properties(
+                width='container',
+                height=400,
+                title='Total Revenue per Shop'
+            )
+            
+            st.altair_chart(chart, use_container_width=True)
             
             col1, col2 = st.columns(2)
             with col1:

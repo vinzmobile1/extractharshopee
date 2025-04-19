@@ -132,7 +132,7 @@ if uploaded_files:
                 width='container',
                 height=400,
                 title='Total Revenue per Shop'
-            )
+            ).interactive()
             
             st.altair_chart(chart, use_container_width=True)
             

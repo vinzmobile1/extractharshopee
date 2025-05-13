@@ -107,7 +107,8 @@ def ekstrak_dan_simpan_data(file):
     except Exception as e:
         st.error(f"Error processing file: {e}")
     return pd.DataFrame(data_list) if data_list else None
-
+    
+st.set_page_config(layout="wide", page_title="Naufal - Scrape Shopee")
 st.title("Extract Data Shopee")
 
 uploaded_files = st.file_uploader("Upload HAR files", type=["har"], accept_multiple_files=True)

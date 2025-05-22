@@ -91,7 +91,7 @@ def ekstrak_dan_simpan_data(file):
                 ctime = find_value(item, ["ctime"])
                 ctime = datetime.datetime.fromtimestamp(ctime).strftime('%Y-%m-%d') if isinstance(ctime, (int, float)) else "N/A"
                 shopee_url = create_shopee_url("https://shopee.co.id/", name, shopid, itemid)
-                is_sold_out = find_value(item, ["is_sold_out"])
+                is_sold_out = str(find_value(item, ["is_sold_out"]))
                 data_list.append({
                     "item_name": name,
                     "price": price,

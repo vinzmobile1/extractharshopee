@@ -99,12 +99,12 @@ def ekstrak_dan_simpan_data(file):
                     "historical_sold": historical_sold,
                     "shopee_url": shopee_url,
                     "shop_name": shop_name,
+                    "status_product": is_sold_out,
                     "itemid": itemid,
                     "shopid": shopid,                    
                     "upload_date": ctime,                    
                     "rating_star": rating_star,
                     "rating_count": rating_count,
-                    "is_sold_out": is_sold_out,
                 })
     except Exception as e:
         st.error(f"Error processing file: {e}")
